@@ -192,3 +192,8 @@ app {
     box-shadow: none;
     color: #007bff;
 }
+
+.version {
+    color: gray;
+    font-size: small;
+}
