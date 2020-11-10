@@ -20,22 +20,6 @@
     </div>
 
     <script>
-    /*const NAME = 'ActiveLanguage';
-
-    function getLanguage()
-    {
-        let result = window.localStorage[NAME];
-
-        return result ? result : navigator.language || navigator.userLanguage || 'en';
-
-    }
-
-    function setLanguage(value)
-    {
-        window.localStorage[NAME] = value
-
-    }*/
-
     window.blazorCulture = {
         get: () => window.localStorage['BlazorCulture'],
         set: (value) => window.localStorage['BlazorCulture'] = value
