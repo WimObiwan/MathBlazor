@@ -1,0 +1,195 @@
+﻿@page "/tables"
+@inject IStringLocalizer<Tables> Loc 
+@inject IJSRuntime JSRuntime 
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (!started)
+{
+    <h1>@Loc["Multiplication tables"]</h1>
+
+    <p>@Loc["Select the tables that you want to exercise:"]</p>
+    <p>
+    @for (int i = 2; i <= 10; i++)
+    {
+        var buttonNo = i;
+        <button type="button" class="btn btn-outline-primary @(IsActive(tables, i) ? "active" : "")" @onclick="() => Toggle(tables, buttonNo)">
+            @i
+        </button>
+    }
+    </p>
+
+    <p>
+        <button type="button" class="btn btn-outline-primary @(IsActive(types, 0) ? "active" : "")" @onclick="() => Toggle(types, 0)">
+            @Loc["Multiply"]
+        </button>
+        <button type="button" class="btn btn-outline-primary @(IsActive(types, 1) ? "active" : "")" @onclick="() => Toggle(types, 1)">
+            @Loc["Multiply reversed"]
+        </button>
+        <button type="button" class="btn btn-outline-primary @(IsActive(types, 2) ? "active" : "")" @onclick="() => Toggle(types, 2)">
+            @Loc["Divide"]
+        </button>
+    </p>
+
+    <button type="button" class="btn btn-success" @onclick="Start">@Loc["Start"]</button>
+}
+else
+{
+    @if (message != null)
+    {
+        <div class="alert @( messageSuccess ? "alert-success" : "alert-danger" )" role="alert">
+            @message
+        </div>
+    }
+    <p class="exercise">
+        @((MarkupString)exercise)
+        <br/>
+        <input type="number" class="form-control form-control-lg" @bind="answer" @onkeyup="Answer_onkeyup" @ref="answerField"/>
+        <button type="button" class="btn btn-primary" @onclick="Check">@Loc["Check"]</button>
+    </p>
+    <hr/>
+    <p>
+        @Loc["Score:"] @score_correct / @score_total
+        @if (@score_total > 0)
+        {
+            <small>(@(Math.Round(score_correct * 100.0 / score_total))%)</small>
+        }
+    </p>
+}
+
+@code {
+    private ElementReference answerField;
+    private Random random = new Random();
+
+    bool started = false;
+    private string exercise;
+    private int result;
+    private string answer;
+    private string message;
+    private bool messageSuccess;
+
+    int score_correct = 0, score_total = 0;
+
+    readonly static IReadOnlyList<int> AllTables = new List<int>() { 2, 3, 4, 5, 6, 7, 8, 9, 10 };  
+    readonly static IReadOnlyList<int> AllTypes = new List<int>() { 0, 1, 2 };  
+    List<int> tables = AllTables.ToList();
+    List<int> types = AllTypes.ToList();
+
+    private List<int> GetCheckedList(IReadOnlyList<int> originalList, IReadOnlyList<int> allList)
+    {
+        List<int> newList;
+        if (originalList == null)
+        {
+            newList = allList.ToList();
+        }
+        else
+        {
+            newList = new List<int>();
+            foreach (var item in originalList)
+            {
+                if (!newList.Any(i => i == item) && allList.Any(i => i == item))
+                    newList.Add(item);
+            }
+        }
+        return newList;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var localTables = await localStorage.GetItemAsync<List<int>>("Tables#tables");
+        if (localTables != null)
+        {
+            tables = GetCheckedList(localTables, AllTables);
+            if (tables.Count == 0)
+                tables.Add(2);
+        }
+        var localTypes = await localStorage.GetItemAsync<List<int>>("Tables#types");
+        types = GetCheckedList(localTypes, AllTypes);
+    }
+
+    private bool IsActive(List<int> list, int value)
+    {
+        return list.Any(a => a == value);
+    }
+
+    private void Toggle(List<int> list, int value)
+    {
+        if (list.RemoveAll(a => a == value) == 0 || list.Count == 0)
+            list.Add(value);
+    }
+
+    private async Task Start()
+    {
+        await localStorage.SetItemAsync("Tables#tables", tables);
+        await localStorage.SetItemAsync("Tables#types", types);
+
+        started = true;
+        message = null;
+        messageSuccess = false;
+        answer = "";
+        score_correct = 0;
+        score_total = 0;
+        NewExercise();
+        
+        await JSRuntime.FocusAsync(answerField);
+    }
+
+    private async Task Answer_onkeyup(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Key == "Enter")
+        {
+            await Check();
+        }
+    }
+
+    private async Task Check()
+    {
+        if (int.TryParse(answer, out int answerNumber))
+        {
+            score_total++;
+            if (answerNumber == result)
+            {
+                message = @Loc["Correct!"];
+                messageSuccess = true;
+                score_correct++;
+                NewExercise();
+            }
+            else
+            {
+                message = @Loc["Wrong!"];
+                messageSuccess = false;
+            }
+        }
+        else
+        {
+            message = @Loc["Your answer is not a valid number!"];
+            messageSuccess = false;
+        }
+        answer = "";
+        await JSRuntime.FocusAsync(answerField);
+    }
+
+    private void NewExercise()
+    {
+        int num1 = random.Next(0, 11);
+        int num2 = tables[random.Next(tables.Count)];
+        result = num1 * num2;
+
+        int type = types[random.Next(types.Count)];
+        switch (type)
+        {
+            default:
+            case 0:
+                exercise = @Loc["{0} &times; {1} &equals; &#x2753;", num1, num2];
+                break;
+            case 1:
+                exercise = @Loc["{0} &times; {1} &equals; &#x2753;", num2, num1];
+                break;
+            case 2:
+                exercise = @Loc["{0} &div; {1} &equals; &#x2753;", result, num2];
+                result = num1;
+                break;
+        }
+    }
+
+    private enum Flip { Normal, Reverse, Both }
+}

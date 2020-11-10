@@ -1,0 +1,37 @@
+@using  System.Globalization
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Nav
+
+<ul class="list-group list-group-horizontal list-group-flush">
+@foreach (var culture in supportedCultures)
+{
+    var currentCulture = culture;
+    <li class="list-group-item">
+        <a href="#" @onclick="() => { Culture = currentCulture; }">@culture.Name</a>
+    </li>
+}
+</ul>
+
+@code
+{
+    CultureInfo[] supportedCultures = new[]
+    {
+        new CultureInfo("en"),
+        new CultureInfo("nl"),
+    };
+
+    CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                var js = (IJSInProcessRuntime)JSRuntime;
+                js.InvokeVoid("blazorCulture.set", value.Name);
+
+                Nav.NavigateTo(Nav.Uri, forceLoad: true);
+            }
+        }
+    }
+}
