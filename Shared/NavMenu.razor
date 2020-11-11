@@ -36,9 +36,18 @@
         <CultureSelector />
     </div>
 
-    <hr/>
-    <div class="version">
-        @Configuration["InformationalVersion"]
+    <div class="navbar navbar-dark version">
+        <div>
+            <div>
+                <a href="https://github.com/WimObiwan/MathBlazor" target="_new">
+                    Source code on&nbsp;
+                    <img src="GitHub-Mark-Light-32px.png" style="height: 3ex;" />
+                </a>
+            </div>
+            <div>
+            v@(Configuration["InformationalVersion"])
+            </div>
+        </div>
     </div>
 </div>
 
