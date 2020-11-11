@@ -2,15 +2,17 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Nav
 
-<ul class="list-group list-group-horizontal list-group-flush">
-@foreach (var culture in supportedCultures)
-{
-    var currentCulture = culture;
-    <li class="list-group-item">
-        <a href="#" @onclick="() => { Culture = currentCulture; }">@culture.Name</a>
-    </li>
-}
-</ul>
+<div class="culture-selector">
+    <ul class="list-group list-group-horizontal list-group-flush">
+    @foreach (var culture in supportedCultures)
+    {
+        var currentCulture = culture;
+        <li class="list-group-item">
+            <a href="#" @onclick="() => { Culture = currentCulture; }">@culture.Name</a>
+        </li>
+    }
+    </ul>
+</div>
 
 @code
 {
