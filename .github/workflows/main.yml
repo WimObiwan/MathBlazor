@@ -31,11 +31,10 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release
       - name: Deploy
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        uses: SamKirkland/FTP-Deploy-Action@master
         with:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "bin/Release/netstandard2.1/publish/wwwroot/"
           known-hosts: ${{ secrets.KNOWN_HOSTS }}
-          
