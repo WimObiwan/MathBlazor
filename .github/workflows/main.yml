@@ -30,15 +30,13 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Publish
         run: dotnet publish --configuration Release
-
-      # Copying files and artifacts via SSH
       - name: Deploy
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
-          rm: true
-          source: "bin/Release/netstandard2.1/publish/wwwroot/"
-          target: "${{ secrets.REMOTE_DIR }}"
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: "bin/Release/netstandard2.1/publish/wwwroot/"
+          METHOD: sftp
+          PORT: 22
+          ARGS: --delete
