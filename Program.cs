@@ -23,7 +23,7 @@ namespace MathBlazor
                     InitialData = new Dictionary<string, string>() {
                         { "Version", 
                             $"{ThisAssembly.Git.SemVer.Major}.{ThisAssembly.Git.SemVer.Minor}.{ThisAssembly.Git.Commits}"
-                            + $"-{ThisAssembly.Git.Branch}+${ThisAssembly.Git.Commit}" }
+                            + $"-{ThisAssembly.Git.Branch}+{ThisAssembly.Git.Commit}" }
                     }
                 });
 
