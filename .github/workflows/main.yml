@@ -24,10 +24,21 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
-      - name: Install dependencies
+      - name: Dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      - name: dotnet publish
+      - name: Publish
         run: dotnet publish --configuration Release
-   
+
+      # Copying files and artifacts via SSH
+      - name: Deploy
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+          rm: true
+          source: "bin/Release/netstandard2.1/publish/wwwroot/"
+          target: "${{ secrets.REMOTE_DIR }}"
