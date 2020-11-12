@@ -38,4 +38,4 @@ jobs:
           ftp-password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "bin/Release/netstandard2.1/publish/wwwroot/"
           #known-hosts: ${{ secrets.KNOWN_HOSTS }}
-          git-ftp-args: --all --insecure
+          git-ftp-args: --all
