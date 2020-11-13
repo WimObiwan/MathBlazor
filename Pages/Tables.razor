@@ -1,7 +1,8 @@
-@page "/tables"
+﻿@page "/tables"
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject TablesExerciseFactory TablesExerciseFactory
 
 @if (!started)
 {
@@ -41,7 +42,7 @@ else
         </div>
     }
     <p class="exercise">
-        @((MarkupString)exercise)
+        @((MarkupString)exercise.Html)
         <br/>
         <input type="number" class="form-control form-control-lg" @bind="answer" @onkeyup="Answer_onkeyup" @ref="answerField"/>
         <button type="button" class="btn btn-primary" @onclick="Check">@Loc["Check"]</button>
@@ -61,8 +62,7 @@ else
     private Random random = new Random();
 
     bool started = false;
-    private string exercise;
-    private int result;
+    Exercise exercise;
     private string answer;
     private string message;
     private bool messageSuccess;
@@ -95,14 +95,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var localTables = await localStorage.GetItemAsync<List<int>>("Tables#tables");
+        var localTables = await LocalStorage.GetItemAsync<List<int>>("Tables#tables");
         if (localTables != null)
         {
             tables = GetCheckedList(localTables, AllTables);
             if (tables.Count == 0)
                 tables.Add(2);
         }
-        var localTypes = await localStorage.GetItemAsync<List<int>>("Tables#types");
+        var localTypes = await LocalStorage.GetItemAsync<List<int>>("Tables#types");
         types = GetCheckedList(localTypes, AllTypes);
     }
 
@@ -119,8 +119,10 @@ else
 
     private async Task Start()
     {
-        await localStorage.SetItemAsync("Tables#tables", tables);
-        await localStorage.SetItemAsync("Tables#types", types);
+        await LocalStorage.SetItemAsync("Tables#tables", tables);
+        await LocalStorage.SetItemAsync("Tables#types", types);
+
+        TablesExerciseFactory.Initialize(tables, types);
 
         started = true;
         message = null;
@@ -130,7 +132,7 @@ else
         score_total = 0;
         NewExercise();
         StateHasChanged();
-        
+
         await JSRuntime.FocusAsync(answerField);
     }
 
@@ -144,10 +146,15 @@ else
 
     private async Task Check()
     {
-        if (int.TryParse(answer, out int answerNumber))
+        if (string.IsNullOrWhiteSpace(answer))
+        {
+            message = null;
+            messageSuccess = true;
+        }
+        else if (int.TryParse(answer, out int answerNumber))
         {
             score_total++;
-            if (answerNumber == result)
+            if (answerNumber == exercise.Result)
             {
                 message = @Loc["Correct!"];
                 messageSuccess = true;
@@ -171,26 +178,6 @@ else
 
     private void NewExercise()
     {
-        int num1 = random.Next(0, 11);
-        int num2 = tables[random.Next(tables.Count)];
-        result = num1 * num2;
-
-        int type = types[random.Next(types.Count)];
-        switch (type)
-        {
-            default:
-            case 0:
-                exercise = @Loc["{0} &times; {1} &equals; &#x2753;", num1, num2];
-                break;
-            case 1:
-                exercise = @Loc["{0} &times; {1} &equals; &#x2753;", num2, num1];
-                break;
-            case 2:
-                exercise = @Loc["{0} &div; {1} &equals; &#x2753;", result, num2];
-                result = num1;
-                break;
-        }
+        exercise = TablesExerciseFactory.GetExercise();
     }
-
-    private enum Flip { Normal, Reverse, Both }
 }

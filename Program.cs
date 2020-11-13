@@ -32,6 +32,8 @@ namespace MathBlazor
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
+            builder.Services.AddScoped<TablesExerciseFactory>();
+
             var host = builder.Build();
             
             var jsInterop = host.Services.GetRequiredService<IJSRuntime>();
