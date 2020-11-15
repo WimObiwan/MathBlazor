@@ -117,16 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Mathematics" xml:space="preserve">
-    <value>Wiskunde</value>
+  <data name="Exercise" xml:space="preserve">
+    <value>Oefening</value>
     <comment/>
   </data>
-  <data name="L2 Tables" xml:space="preserve">
-    <value>L2 Tafels</value>
+  <data name="Result" xml:space="preserve">
+    <value>Resultaat</value>
+    <comment/>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Antwoord</value>
+    <comment/>
+  </data>
+  <data name="Correct" xml:space="preserve">
+    <value>Correct</value>
+    <comment/>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duur</value>
     <comment/>
   </data>
   <data name="Report" xml:space="preserve">
     <value>Rapport</value>
+    <comment/>
+  </data>
+  <data name="s" xml:space="preserve">
+    <value>s</value>
     <comment/>
   </data>
 </root>

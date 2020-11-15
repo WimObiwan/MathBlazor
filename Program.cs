@@ -33,6 +33,7 @@ namespace MathBlazor
             builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
             builder.Services.AddScoped<TablesExerciseFactory>();
+            builder.Services.AddScoped<ExerciseHistory>();
 
             var host = builder.Build();
             
