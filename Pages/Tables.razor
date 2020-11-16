@@ -126,6 +126,7 @@ else
         await LocalStorage.SetItemAsync("Tables#types", types);
 
         TablesExerciseFactory.Initialize(tables, types);
+        await JSRuntime.GTagEvent("Start", nameof(Tables));
 
         started = true;
         message = null;
@@ -133,7 +134,7 @@ else
         answer = "";
         score_correct = 0;
         score_total = 0;
-        NewExercise();
+        await NewExercise();
         StateHasChanged();
 
         await JSRuntime.FocusAsync(answerField);
@@ -171,7 +172,7 @@ else
                 message = @Loc["Correct!"];
                 messageSuccess = true;
                 score_correct++;
-                NewExercise();
+                await NewExercise();
             }
             else
             {
@@ -189,10 +190,12 @@ else
         await JSRuntime.FocusAsync(answerField);
     }
 
-    private void NewExercise()
+    private async Task NewExercise()
     {
         exercise = TablesExerciseFactory.GetExercise();
         ExerciseHistory.Add(exercise);
+        await JSRuntime.GTagEvent("Exercise", nameof(Tables));
+
         stopwatch.Restart();
     }
 }
