@@ -13,59 +13,50 @@
       <th scope="col">@Loc["Answer"]</th>
       <th scope="col">@Loc["Correct"]</th>
       <th scope="col">@Loc["Duration"]</th>
-      <th></th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    @foreach(var exercise in ExerciseHistory.List)
+    @foreach(var exercise in ExerciseHistory.List.OrderByDescending(e => e.RepeatPriority))
     {
         bool first = true;
         foreach(var response in exercise.Responses)
         {
-        int rowspan;
-        if (first)
-        {
-            rowspan = exercise.Responses.Count;
-            first = false;
-        }
-        else
-        {
-            rowspan = 0;
-        }
-        <tr>
-            <th scope="row">@response.Ordinal</th>
-            @if (rowspan > 0)
+            int rowspan;
+            if (first)
             {
-                <td rowspan="@rowspan">@((MarkupString)exercise.Html)</td>
-                <td rowspan="@rowspan">@exercise.Result</td>
-            }
-            <td>@response.Answer</td>
-            <td>
-            @if(response.IsCorrect)
-            {
-                @: &#9745;
+                rowspan = exercise.Responses.Count;
+                first = false;
             }
             else
             {
-                @: &#9744;
+                rowspan = 0;
             }
-            </td>
-            <td>@(Math.Round(response.Duration / 1000.0, 1))@Loc["s"]</td>
-            @if (rowspan > 0)
-            {
-                <td rowspan="@rowspan">
-                    @if (exercise.HasBeenRepeatedBy == null)
-                    {
-                        @: &#128279;
-                    }
-                    @if (exercise.IsRepeatFrom == null)
-                    {
-                        @: &#10227;
-                    }
+            <tr>
+                <th scope="row">@response.Ordinal</th>
+                @if (rowspan > 0)
+                {
+                    <td rowspan="@rowspan">@((MarkupString)exercise.Html)</td>
+                    <td rowspan="@rowspan">@exercise.Result</td>
+                }
+                <td>@response.Answer</td>
+                <td>
+                @if(response.IsCorrect)
+                {
+                    @: &#9745;
+                }
+                else
+                {
+                    @: &#9744;
+                }
                 </td>
-            }
-        </tr>
-        if (first) first = false;
+                <td>@(Math.Round(response.Duration / 1000.0, 1))@Loc["s"]</td>
+                @if (rowspan > 0)
+                {
+                    <td rowspan="@rowspan">@(exercise.RepeatPriority)</td>
+                }
+            </tr>
+            if (first) first = false;
         }
     }
   </tbody>

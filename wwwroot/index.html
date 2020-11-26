@@ -47,10 +47,12 @@
         }
 
         function GTagEvent(action, category) {
-            gtag('event', action,
-            {
-            'event_category' : category,
-            });
+            if (typeof gtag === "function") {
+                gtag('event', action,
+                {
+                    'event_category' : category,
+                });
+            }
         }
     </script>
 

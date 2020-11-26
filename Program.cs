@@ -34,6 +34,8 @@ namespace MathBlazor
 
             builder.Services.AddScoped<TablesExerciseFactory>();
             builder.Services.AddScoped<ExerciseHistory>();
+            builder.Services.AddScoped<ExerciseRepeater>();
+            builder.Services.AddScoped<RepeatPriorityCalculator>((sp) => new RepeatPriorityCalculator(3000, 5000));
 
             var host = builder.Build();
             

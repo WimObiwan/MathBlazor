@@ -5,6 +5,8 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject TablesExerciseFactory TablesExerciseFactory
 @inject ExerciseHistory ExerciseHistory
+@inject ExerciseRepeater ExerciseRepeater
+@inject RepeatPriorityCalculator RepeatPriorityCalculator
 
 @if (!started)
 {
@@ -159,14 +161,15 @@ else
         {
             bool isCorrect = (answerNumber == exercise.Result);
             score_total++;
-            exercise.Responses.Add(
-                new Response()
-                {
-                    Answer = answerNumber, 
-                    IsCorrect = isCorrect, 
-                    Duration = stopwatch.ElapsedMilliseconds,
-                    Ordinal = score_total,
-                });
+            Response response = new Response(exercise)
+            {
+                Answer = answerNumber, 
+                IsCorrect = isCorrect, 
+                Duration = stopwatch.ElapsedMilliseconds,
+                Ordinal = score_total,
+            };
+            double repeatPriority = RepeatPriorityCalculator.Calculate(response);
+            exercise.AddResponse(response, repeatPriority);
             if (isCorrect)
             {
                 message = @Loc["Correct!"];
@@ -192,8 +195,11 @@ else
 
     private async Task NewExercise()
     {
-        exercise = TablesExerciseFactory.GetExercise();
-        ExerciseHistory.Add(exercise);
+        do {
+            exercise = TablesExerciseFactory.GetExercise();
+            exercise = ExerciseRepeater.ProcessExercise(score_total, exercise);
+        } while (exercise == null);
+
         await JSRuntime.GTagEvent("Exercise", nameof(Tables));
 
         stopwatch.Restart();
