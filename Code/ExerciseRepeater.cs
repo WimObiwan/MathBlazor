@@ -24,10 +24,15 @@ class ExerciseRepeater
             return exercise;
         }
 
-        int MaxProximity = Math.Max(5, list.Count(e => !e.LastResponse.IsCorrect || e.LastResponse.Duration > targetDuration));
+        int MaxProximity = Math.Max(5, list.Count(e => !e.LastResponseFirstTrial.IsCorrect || e.LastResponseFirstTrial.Duration > targetDuration));
 
         return list.OrderByDescending(
             e => e.RepeatPriority / Math.Max(1, MaxProximity - (currentOrdinal - e.LastResponse.Ordinal - 1))
             ).First();
+    }
+
+    public int CountInvalidExercises()
+    {
+        return exerciseHistory.List.Count(e => !e.LastResponseFirstTrial.IsCorrect || e.LastResponseFirstTrial.Duration > targetDuration);
     }
 }

@@ -19,6 +19,7 @@ class Exercise
     public int Result { get; private set; }
 
     public IReadOnlyList<Response> Responses => responses.AsReadOnly();
+    public Response LastResponseFirstTrial => responses.LastOrDefault(r => r.Trial == 0);
     public Response LastResponse => responses.LastOrDefault();
 
     public double RepeatPriority => repeatPriority.Average;

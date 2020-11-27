@@ -2,12 +2,12 @@ using System;
 
 class RepeatPriorityCalculator
 {
-    public long TargetDuration { get; private set; }
+    public long TargetDuration { get; set; }
     public long WrongPenalty { get; private set; }
 
-    public RepeatPriorityCalculator(long targetDuration, long wrongPenalty)
+    public RepeatPriorityCalculator(long wrongPenalty)
     {
-        this.TargetDuration = targetDuration;
+        this.TargetDuration = 5000;
         this.WrongPenalty = wrongPenalty;
     }
 

@@ -7,6 +7,7 @@ class Response
     public bool IsCorrect { get; set; }
     public long Duration { get; set; }
     public int Ordinal { get; set; }
+    public int Trial { get; set; }
 
     public Response(Exercise exercise) {
         Exercise = exercise;
