@@ -224,7 +224,7 @@ else
     {
         do {
             exercise = TablesExerciseFactory.GetExercise();
-            exercise = ExerciseRepeater.ProcessExercise(score_total, exercise);
+            exercise = ExerciseRepeater.ProcessExercise(exercise);
         } while (exercise == null);
 
         await JSRuntime.GTagEvent("Exercise", nameof(Tables));
