@@ -161,4 +161,28 @@
     <value>Controleer</value>
     <comment/>
   </data>
+  <data name="Number of exercises:" xml:space="preserve">
+    <value>Aantal oefeningen:</value>
+    <comment/>
+  </data>
+  <data name="Desired duration per exercise:" xml:space="preserve">
+    <value>Gewenste tijd per oefening:</value>
+    <comment/>
+  </data>
+  <data name="in seconds (0 = no limit)" xml:space="preserve">
+    <value>in seconden (0 = geen beperking)</value>
+    <comment/>
+  </data>
+  <data name="The computer learns which exercises are most difficult for the children." xml:space="preserve">
+    <value>De computer leert welke oefeningen voor de kinderen moeilijkst zijn.</value>
+    <comment/>
+  </data>
+  <data name="When practicing long enough, the wrong exercises are repeated first, and then the exercises which weren't completed within the desired time." xml:space="preserve">
+    <value>Bij lang genoeg oefenen worden eerst de foute oefeningen herhaald, en daarna de oefeningen waaraan langst werd getwijfeld.</value>
+    <comment/>
+  </data>
+  <data name="A progress bar is shown. In the end the bar will hang a bit if there are insufficient exercises can be made by the desired time." xml:space="preserve">
+    <value>Er wordt een progressiebalk getoond.  Op het einde blijft de balk wat hangen als er onvoldoende oefeningen tegen de gewenste tijd kunnen gemaakt worden.</value>
+    <comment/>
+  </data>
 </root>
