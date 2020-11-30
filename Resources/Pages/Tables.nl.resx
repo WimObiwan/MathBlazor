@@ -193,4 +193,8 @@
     <value>Oefeningen rapport</value>
     <comment/>
   </data>
+  <data name="More exercises" xml:space="preserve">
+    <value>Meer oefeningen</value>
+    <comment/>
+  </data>
 </root>

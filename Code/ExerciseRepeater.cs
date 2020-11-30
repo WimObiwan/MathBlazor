@@ -15,22 +15,22 @@ class ExerciseRepeater
         this.targetDuration = repeatPriorityCalculator.TargetDuration; // TODO: Take from configuration
     }
     
-    public Exercise ProcessExercise(Exercise exercise)
+    public Exercise ProcessExercise(Exercise originalExercise)
     {
         var list = exerciseHistory.List;
 
         // Check if exercise has been asked already --> if not, accept the exercise
-        if (!list.Any(e => e.Equals(exercise)))
+        if (!list.Any(e => e.Equals(originalExercise)))
         {
-            exerciseHistory.Add(exercise);
-            return exercise;
+            exerciseHistory.Add(originalExercise);
+            return originalExercise;
         }
 
         // Exclude last 3 exercise (to prevent repeats)
         var listLastSkipped = list.OrderByDescending(e => e.LastResponseFirstTrial.Ordinal).Skip(3);
 
         // Take oldest wrong answer
-        exercise = listLastSkipped.Where(e => !e.LastResponseFirstTrial.IsCorrect).OrderBy(e => e.LastResponseFirstTrial.Ordinal).FirstOrDefault();
+        Exercise exercise = listLastSkipped.Where(e => !e.LastResponseFirstTrial.IsCorrect).OrderBy(e => e.LastResponseFirstTrial.Ordinal).FirstOrDefault();
         if (exercise != null)
             return exercise;
 
@@ -43,8 +43,11 @@ class ExerciseRepeater
         int count = listLastSkipped.Count();
         int slowCount = Math.Min(count, Math.Max(10, count / 10)); // choose from at least 10 items
         int randomItem = random.Next(slowCount);
-        exercise = listLastSkipped.OrderByDescending(e => e.LastResponseFirstTrial.Duration).Skip(randomItem).First();
-        return exercise;
+        exercise = listLastSkipped.OrderByDescending(e => e.LastResponseFirstTrial.Duration).Skip(randomItem).FirstOrDefault();
+        if (exercise != null)
+            return exercise;
+
+        return originalExercise;
     }
 
     public int CountInvalidExercises()

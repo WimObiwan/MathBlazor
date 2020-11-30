@@ -5,7 +5,9 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject TablesExerciseFactory TablesExerciseFactory
 @inject ExerciseRepeater ExerciseRepeater
+@inject ExerciseHistory ExerciseHistory
 @inject RepeatPriorityCalculator RepeatPriorityCalculator
+@inject NavigationManager NavigationManager
 
 @{
 switch (state)
@@ -103,7 +105,12 @@ switch (state)
             @Loc["Finished!"]
         </p>
         <p>
-            <a href="/report">@Loc["Exercise report"]</a>
+            <button type="button" class="btn" @onclick="OnClickReport">
+                @Loc["Exercise report"]
+            </button>
+            <button type="button" class="btn" @onclick="OnClickMoreExercises">
+                @Loc["More exercises"]
+            </button>
         </p>
         <hr/>
         <p>
@@ -189,12 +196,23 @@ switch (state)
             list.Add(value);
     }
 
+    private void OnClickReport()
+    {
+        NavigationManager.NavigateTo("/Report");
+    }
+
+    private void OnClickMoreExercises()
+    {
+        state = State.Initializing;
+    }
+
     private async Task Start()
     {
         await LocalStorage.SetItemAsync("Tables#tables", tables);
         await LocalStorage.SetItemAsync("Tables#types", types);
 
         TablesExerciseFactory.Initialize(tables, types);
+        ExerciseHistory.Reset();
         await JSRuntime.GTagEvent("Start", nameof(Tables));
 
         state = State.Exercising;

@@ -11,4 +11,9 @@ class ExerciseHistory
     {
         list.Add(exercise);
     }
+
+    public void Reset()
+    {
+        list.Clear();
+    }
 }
