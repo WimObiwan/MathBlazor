@@ -1,4 +1,4 @@
-@page "/tables"
+﻿@page "/tables"
 @using System.Diagnostics
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
@@ -185,6 +185,12 @@ switch (state)
         }
         var localTypes = await LocalStorage.GetItemAsync<List<int>>("Tables#types");
         types = GetCheckedList(localTypes, AllTypes);
+        int localExerciseCount = await LocalStorage.GetItemAsync<int>("Tables#exerciseCount");
+        if (localExerciseCount > 0 && localExerciseCount < 100)
+            exerciseCount = localExerciseCount;
+        int localExerciseDuration = await LocalStorage.GetItemAsync<int>("Tables#exerciseDuration");
+        if (localExerciseDuration > 0 && localExerciseDuration < 60)
+            exerciseDuration = localExerciseDuration;
     }
 
     private bool IsActive(List<int> list, int value)
@@ -212,6 +218,8 @@ switch (state)
     {
         await LocalStorage.SetItemAsync("Tables#tables", tables);
         await LocalStorage.SetItemAsync("Tables#types", types);
+        await LocalStorage.SetItemAsync("Tables#exerciseCount", exerciseCount);
+        await LocalStorage.SetItemAsync("Tables#exerciseDuration", exerciseDuration);
 
         TablesExerciseFactory.Initialize(tables, types);
         ExerciseHistory.Reset();
