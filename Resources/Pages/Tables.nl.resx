@@ -185,4 +185,12 @@
     <value>Er wordt een progressiebalk getoond.  Op het einde blijft de balk wat hangen als er onvoldoende oefeningen tegen de gewenste tijd kunnen gemaakt worden.</value>
     <comment/>
   </data>
+  <data name="Finished!" xml:space="preserve">
+    <value>Klaar!</value>
+    <comment/>
+  </data>
+  <data name="Exercise report" xml:space="preserve">
+    <value>Oefeningen rapport</value>
+    <comment/>
+  </data>
 </root>
