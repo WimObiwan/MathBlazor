@@ -1,4 +1,4 @@
-﻿@page "/tables"
+@page "/tables"
 @using System.Diagnostics
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
@@ -7,11 +7,14 @@
 @inject ExerciseRepeater ExerciseRepeater
 @inject RepeatPriorityCalculator RepeatPriorityCalculator
 
-@if (!started)
+@{
+switch (state)
 {
-    <h1>@Loc["Multiplication tables"]</h1>
+    case State.Initializing:
+    {
+        <h1>@Loc["Multiplication tables"]</h1>
 
-    <p>@Loc["Select the tables that you want to exercise:"]</p>
+        <p>@Loc["Select the tables that you want to exercise:"]</p>
     <p>
     @for (int i = 2; i <= 10; i++)
     {
@@ -35,25 +38,34 @@
     </p>
 
     <div class="form-group row">
-        <div class="col-xs-2">
-            <label for="exerciseCount">@Loc["Number of exercises:"]</label>                
-            <input type="number" class="form-control" @bind="exerciseCount" id="exerciseCount"/>
-            <span class="help-block">@Loc[""]</span>
+            <div class="col-xs-2">
+                <label for="exerciseCount">@Loc["Number of exercises:"]</label>                
+                <input type="number" class="form-control" @bind="exerciseCount" id="exerciseCount"/>
+                <p class="text-muted">@Loc[""]</p>
+            </div>
+            <div class="col-xs-2">
+                <label for="exerciseCount">@Loc["Desired duration per exercise:"]</label>                
+                <input type="number" class="form-control" @bind="exerciseDuration" id="exerciseDuration"/>
+                <p class="text-muted">@Loc["in seconds (0 = no limit)"]</p>
+            </div>
         </div>
-        <div class="col-xs-2">
-            <label for="exerciseCount">@Loc["Target duration per exercise:"]</label>                
-            <input type="number" class="form-control" @bind="exerciseDuration" id="exerciseDuration"/>
-            <span class="help-block">@Loc["in seconds"]</span>
+        <div class="form-group row">
+            @Loc["The computer learns which exercises are most difficult for the children."]
+            @Loc["When practicing long enough, the wrong exercises are repeated first, and then the exercises which weren't completed within the desired time."]
+            @Loc["A progress bar is shown. In the end the bar will hang a bit if there are insufficient exercises can be made by the desired time."]
         </div>
-    </div>
 
-    <button type="button" class="btn btn-success" @onclick="Start">@Loc["Start"]</button>
-}
-else
-{
-    @if (message != null)
+        <button type="button" class="btn btn-success" @onclick="Start">@Loc["Start"]</button>
+
+        break;
+    }
+
+    case State.Exercising:
     {
-        <div class="alert @( messageSuccess ? "alert-success" : "alert-danger" )" role="alert">
+
+        @if (message != null)
+        {
+            <div class="alert @( messageSuccess ? "alert-success" : "alert-danger" )" role="alert">
             @message
         </div>
     }
@@ -74,13 +86,20 @@ else
     <div class="progress">
         <div class="progress-bar bg-success" role="progressbar" style="width: @percentDone%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
+
+        break;
+}
+
+}
 }
 
 @code {
     private ElementReference answerField;
     private Random random = new Random();
 
-    bool started = false;
+    enum State { Initializing, Exercising, Finished }
+    State state = State.Initializing;
+
     Exercise exercise;
     private string answer;
     private string message;
@@ -149,7 +168,7 @@ else
         TablesExerciseFactory.Initialize(tables, types);
         await JSRuntime.GTagEvent("Start", nameof(Tables));
 
-        started = true;
+        state = State.Exercising;
         message = null;
         messageSuccess = false;
         answer = "";
