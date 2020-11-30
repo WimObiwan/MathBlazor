@@ -1,4 +1,4 @@
-﻿@page "/tables"
+@page "/tables"
 @using System.Diagnostics
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
@@ -82,6 +82,7 @@ switch (state)
             @Loc["Score:"] @score_correct / @score_total
             @if (@score_total > 0)
             {
+                @: &nbsp;
                 <small>(@(Math.Round(score_correct * 100.0 / score_total))%)</small>
             }
         </p>
@@ -105,10 +106,10 @@ switch (state)
             @Loc["Finished!"]
         </p>
         <p>
-            <button type="button" class="btn" @onclick="OnClickReport">
+            <button type="button" class="btn btn-primary" @onclick="OnClickReport">
                 @Loc["Exercise report"]
             </button>
-            <button type="button" class="btn" @onclick="OnClickMoreExercises">
+            <button type="button" class="btn btn-primary" @onclick="OnClickMoreExercises">
                 @Loc["More exercises"]
             </button>
         </p>
@@ -117,6 +118,7 @@ switch (state)
             @Loc["Score:"] @score_correct / @score_total
             @if (@score_total > 0)
             {
+                @: &nbsp;
                 <small>(@(Math.Round(score_correct * 100.0 / score_total))%)</small>
             }
         </p>
