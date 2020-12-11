@@ -1,4 +1,4 @@
-@page "/tables"
+﻿@page "/tables"
 @using System.Diagnostics
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
@@ -87,7 +87,7 @@ switch (state)
             }
         </p>
         <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: @percentDone%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: @((int)(fractionDone * 100))%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
         break;
@@ -123,7 +123,7 @@ switch (state)
             }
         </p>
         <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: @percentDone%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
         break;
@@ -145,7 +145,7 @@ switch (state)
     int exerciseCount = 50;
     int exerciseDuration = 0;
     int trial = 0;
-    int percentDone = 0;
+    double fractionDone = 0.0;
     Stopwatch stopwatch = new Stopwatch();
 
     int score_correct = 0, score_total = 0;
@@ -231,7 +231,7 @@ switch (state)
         answer = "";
         score_correct = 0;
         score_total = 0;
-        percentDone = 0;
+        fractionDone = 0.0;
         RepeatPriorityCalculator.TargetDuration = exerciseDuration * 1000;        
         await NewExercise();
         StateHasChanged();
@@ -258,6 +258,9 @@ switch (state)
         {
             bool isCorrect = (answerNumber == exercise.Result);
             score_total++;
+            if (isCorrect)
+                score_correct++;
+
             Response response = new Response(exercise)
             {
                 Answer = answerNumber, 
@@ -268,16 +271,15 @@ switch (state)
             };
             double repeatPriority = RepeatPriorityCalculator.Calculate(response);
             exercise.AddResponse(response, repeatPriority);
+
+            fractionDone = (float)score_correct / (Math.Max(exerciseCount, score_correct) + ExerciseRepeater.CountInvalidExercises());
+
             if (isCorrect)
             {
                 message = @Loc["Correct!"];
                 messageSuccess = true;
-                score_correct++;
-                int percentDone1 = (exerciseCount - ExerciseRepeater.CountInvalidExercises()) * 100 / exerciseCount;
-                int percentDone2 = score_correct * 100 / exerciseCount;
-                percentDone = Math.Min(percentDone1, percentDone2);
                 
-                if (!(percentDone >= 100)) // '<'' gives errors...
+                if (!(fractionDone >= 1.0)) // '<'' gives errors...
                     await NewExercise();
                 else
                     state = State.Finished;
