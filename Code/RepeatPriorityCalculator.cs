@@ -7,7 +7,6 @@ class RepeatPriorityCalculator
 
     public RepeatPriorityCalculator(long wrongPenalty)
     {
-        this.TargetDuration = 5000;
         this.WrongPenalty = wrongPenalty;
     }
 

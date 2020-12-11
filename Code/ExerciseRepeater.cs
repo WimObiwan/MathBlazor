@@ -7,12 +7,12 @@ class ExerciseRepeater
 {
     readonly Random random = new Random();
     ExerciseHistory exerciseHistory;
-    long targetDuration;
+    RepeatPriorityCalculator repeatPriorityCalculator;
 
     public ExerciseRepeater(ExerciseHistory exerciseHistory, RepeatPriorityCalculator repeatPriorityCalculator)
     {
         this.exerciseHistory = exerciseHistory;
-        this.targetDuration = repeatPriorityCalculator.TargetDuration; // TODO: Take from configuration
+        this.repeatPriorityCalculator = repeatPriorityCalculator;
     }
     
     public Exercise ProcessExercise(Exercise originalExercise)
@@ -35,9 +35,13 @@ class ExerciseRepeater
             return exercise;
 
         // Take oldest slow answer
-        exercise = listLastSkipped.Where(e => e.LastResponseFirstTrial.Duration > targetDuration).OrderBy(e => e.LastResponseFirstTrial.Ordinal).FirstOrDefault();
-        if (exercise != null)
-            return exercise;
+        var targetDuration = repeatPriorityCalculator.TargetDuration;
+        if (targetDuration > 0)
+        {
+            exercise = listLastSkipped.Where(e => e.LastResponseFirstTrial.Duration > targetDuration).OrderBy(e => e.LastResponseFirstTrial.Ordinal).FirstOrDefault();
+            if (exercise != null)
+                return exercise;
+        }
 
         // Take random item from 10% slowest (with minimum of 10 items, and with maximum of total count)
         int count = listLastSkipped.Count();
@@ -52,6 +56,7 @@ class ExerciseRepeater
 
     public int CountInvalidExercises()
     {
-        return exerciseHistory.List.Count(e => !e.LastResponseFirstTrial.IsCorrect || e.LastResponseFirstTrial.Duration > targetDuration);
+        var targetDuration = repeatPriorityCalculator.TargetDuration;
+        return exerciseHistory.List.Count(e => !e.IsValid(targetDuration));
     }
 }

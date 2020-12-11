@@ -232,7 +232,7 @@ switch (state)
         score_correct = 0;
         score_total = 0;
         percentDone = 0;
-        RepeatPriorityCalculator.TargetDuration = exerciseDuration;        
+        RepeatPriorityCalculator.TargetDuration = exerciseDuration * 1000;        
         await NewExercise();
         StateHasChanged();
 
