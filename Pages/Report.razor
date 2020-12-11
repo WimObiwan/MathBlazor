@@ -1,4 +1,4 @@
-@page "/report"
+﻿@page "/report"
 @inject IStringLocalizer<Report> Loc 
 @inject ExerciseHistory ExerciseHistory
 @inject RepeatPriorityCalculator RepeatPriorityCalculator
@@ -14,7 +14,6 @@
       <th scope="col">@Loc["Answer"]</th>
       <th scope="col">@Loc["Correct"]</th>
       <th scope="col">@Loc["Duration"]</th>
-      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -52,10 +51,6 @@
                 }
                 </td>
                 <td>@(Math.Round(response.Duration / 1000.0, 1))@Loc["s"]</td>
-                @if (rowspan > 0)
-                {
-                    <td rowspan="@rowspan">@(exercise.RepeatPriority)</td>
-                }
             </tr>
             if (first) first = false;
         }

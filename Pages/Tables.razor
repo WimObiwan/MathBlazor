@@ -276,7 +276,6 @@ switch (state)
                 int percentDone1 = (exerciseCount - ExerciseRepeater.CountInvalidExercises()) * 100 / exerciseCount;
                 int percentDone2 = score_correct * 100 / exerciseCount;
                 percentDone = Math.Min(percentDone1, percentDone2);
-                //message += $"  {percentDone1}  {percentDone2}";
                 
                 if (!(percentDone >= 100)) // '<'' gives errors...
                     await NewExercise();
