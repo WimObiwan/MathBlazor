@@ -54,9 +54,20 @@ class ExerciseRepeater
         return originalExercise;
     }
 
+    public int CountValidExercises()
+    {
+        var targetDuration = repeatPriorityCalculator.TargetDuration;
+        return exerciseHistory.List.Count(e => e.IsValid(targetDuration));
+    }
+
     public int CountInvalidExercises()
     {
         var targetDuration = repeatPriorityCalculator.TargetDuration;
         return exerciseHistory.List.Count(e => !e.IsValid(targetDuration));
+    }
+
+    public int CountExercises()
+    {
+        return exerciseHistory.List.Count();
     }
 }

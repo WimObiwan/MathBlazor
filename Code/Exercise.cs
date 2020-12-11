@@ -22,6 +22,11 @@ class Exercise
     public Response LastResponseFirstTrial => responses.LastOrDefault(r => r.Trial == 0);
     public Response LastResponse => responses.LastOrDefault();
 
+    public bool IsValid(long targetDuration)
+    {
+        return LastResponseFirstTrial.IsCorrect && (targetDuration == 0 || LastResponseFirstTrial.Duration <= targetDuration);
+    }
+
     public double RepeatPriority => repeatPriority.Average;
 
     public void AddResponse(Response response, double repeatPriority)
