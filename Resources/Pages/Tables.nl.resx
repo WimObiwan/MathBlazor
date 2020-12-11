@@ -181,8 +181,8 @@
     <value>Bij lang genoeg oefenen worden eerst de foute oefeningen herhaald, en daarna de oefeningen waaraan langst werd getwijfeld.</value>
     <comment/>
   </data>
-  <data name="A progress bar is shown. In the end the bar will hang a bit if there are insufficient exercises can be made by the desired time." xml:space="preserve">
-    <value>Er wordt een progressiebalk getoond.  Op het einde blijft de balk wat hangen als er onvoldoende oefeningen tegen de gewenste tijd kunnen gemaakt worden.</value>
+  <data name="Only correct exercises (that were solved fast enough) make the progress bar proceed." xml:space="preserve">
+    <value>Enkel correcte oefeningen (die snel genoeg werden opgelost) doen de progressiebalk vooruitgaan.</value>
     <comment/>
   </data>
   <data name="Finished!" xml:space="preserve">

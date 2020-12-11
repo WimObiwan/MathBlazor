@@ -1,4 +1,4 @@
-﻿@page "/tables"
+@page "/tables"
 @using System.Diagnostics
 @inject IStringLocalizer<Tables> Loc 
 @inject IJSRuntime JSRuntime 
@@ -51,10 +51,10 @@ switch (state)
                 <p class="text-muted">@Loc["in seconds (0 = no limit)"]</p>
             </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row text-muted">
             @Loc["The computer learns which exercises are most difficult for the children."]
             @Loc["When practicing long enough, the wrong exercises are repeated first, and then the exercises which weren't completed within the desired time."]
-            @Loc["A progress bar is shown. In the end the bar will hang a bit if there are insufficient exercises can be made by the desired time."]
+            @Loc["Only correct exercises (that were solved fast enough) make the progress bar proceed."]
         </div>
 
         <button type="button" class="btn btn-success" @onclick="Start">@Loc["Start"]</button>
